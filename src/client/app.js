@@ -41,9 +41,10 @@ submitID.addEventListener("click", async () => {
         })
     });
 
-    const data = await response.json;
+    const data = await response.json();
     console.log(data);
 
+    addCheckin(id, "Success")
     idEntry.value = "";
     manualEntryStatus.textContent = "";
     manualEntryStatus.classList.remove("status");
@@ -65,7 +66,7 @@ submitNewStudent.addEventListener("click", async () => {
         return;
     }
 
-    const response = await fetch("api/register", {
+    const response = await fetch("api/registration", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -76,7 +77,7 @@ submitNewStudent.addEventListener("click", async () => {
         })
     });
 
-    const data = await response.json;
+    const data = await response.json();
     console.log(data);
 
     addCheckin(id, "New Student Added")
