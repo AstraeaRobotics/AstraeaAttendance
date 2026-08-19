@@ -23,21 +23,35 @@ function validID(id) {
     return (id.length === 6 && (/^\d+$/.test(id)))
 }
 
-submitID.addEventListener("click", () => {
+submitID.addEventListener("click", async () => {
     const id = idEntry.value;
-    if (validID(id)) {
-        addCheckin(id, "Manual");
-        idEntry.value = "";
-        manualEntryStatus.textContent = "";
-        manualEntryStatus.classList.remove("status");
-    } else {
+    if (!validID(id)) {
         manualEntryStatus.textContent = "INVALID ID: please try again!";
         manualEntryStatus.classList.add("status");
+        return;
     }
-})
 
-submitNewStudent.addEventListener("click", () => {
+    const response = await fetch("/api/attendance", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id: id
+        })
+    });
+
+    const data = await response.json;
+    console.log(data);
+
+    idEntry.value = "";
+    manualEntryStatus.textContent = "";
+    manualEntryStatus.classList.remove("status");
+});
+
+submitNewStudent.addEventListener("click", async () => {
     const id = idNewStudent.value;
+    const name = nameNewStudent.value;
 
     if (!validID(id)) {
         statusNewStudent.textContent = "INVALID ID: please try again!";
@@ -45,11 +59,25 @@ submitNewStudent.addEventListener("click", () => {
         return;
     }
 
-    if (!nameNewStudent.value) {
+    if (!name) {
         statusNewStudent.textContent = "Name field is blank";
         statusNewStudent.classList.add("status")
         return;
     }
+
+    const response = await fetch("api/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id: id,
+            name: name
+        })
+    });
+
+    const data = await response.json;
+    console.log(data);
 
     addCheckin(id, "New Student Added")
     idNewStudent.value = "";
