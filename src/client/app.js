@@ -1,8 +1,9 @@
 const submitID = document.querySelector("#submit-id");
-const submitNewStudent = document.querySelector("#new-student-submit")
-const idNewStudent = document.querySelector("#new-student-id")
-const nameNewStudent = document.querySelector("#new-student-name")
-const statusNewStudent = document.querySelector("#status-new-student")
+const submitNewStudent = document.querySelector("#new-student-submit");
+const idNewStudent = document.querySelector("#new-student-id");
+const nameNewStudent = document.querySelector("#new-student-name");
+const subteamNewStudent = document.querySelector("#new-student-subteam");
+const statusNewStudent = document.querySelector("#status-new-student");
 const idEntry = document.querySelector("#student-id-entry");
 const recentCheckins = document.querySelector("#recent-checkins");
 const manualEntryStatus = document.querySelector("#status-manual-entry")
@@ -16,11 +17,11 @@ function addCheckin(id, type) {
         setTimeout(() => {
             entry.remove();
         }, 500);
-    }, 4500)
+    }, 4500);
 }
 
 function validID(id) {
-    return (id.length === 6 && (/^\d+$/.test(id)))
+    return (id.length === 6 && (/^\d+$/.test(id)));
 }
 
 submitID.addEventListener("click", async () => {
@@ -42,17 +43,28 @@ submitID.addEventListener("click", async () => {
     });
 
     const data = await response.json();
-    console.log(data);
+    const { success } = data;
 
-    addCheckin(id, "Success")
-    idEntry.value = "";
-    manualEntryStatus.textContent = "";
-    manualEntryStatus.classList.remove("status");
+    if (success) {
+
+        addCheckin(id, "Success")
+        idEntry.value = "";
+        manualEntryStatus.textContent = "";
+        manualEntryStatus.classList.remove("status");
+
+    } else {
+
+        manualEntryStatus.textContent = data.error;
+        manualEntryStatus.classList.add("status");
+
+    }
 });
 
 submitNewStudent.addEventListener("click", async () => {
     const id = idNewStudent.value;
     const name = nameNewStudent.value;
+    const subteam = subteamNewStudent.value;
+
 
     if (!validID(id)) {
         statusNewStudent.textContent = "INVALID ID: please try again!";
@@ -62,7 +74,7 @@ submitNewStudent.addEventListener("click", async () => {
 
     if (!name) {
         statusNewStudent.textContent = "Name field is blank";
-        statusNewStudent.classList.add("status")
+        statusNewStudent.classList.add("status");
         return;
     }
 
@@ -73,16 +85,22 @@ submitNewStudent.addEventListener("click", async () => {
         },
         body: JSON.stringify({
             id: id,
-            name: name
+            name: name,
+            subteam: subteam
         })
     });
 
     const data = await response.json();
-    console.log(data);
+    const { success } = data
 
-    addCheckin(id, "New Student Added")
-    idNewStudent.value = "";
-    nameNewStudent.value = "";
-    statusNewStudent.textContent = "";
-    statusNewStudent.classList.remove("status");
+    if (success) {
+        addCheckin(id, "New Student Added")
+        idNewStudent.value = "";
+        nameNewStudent.value = "";
+        statusNewStudent.textContent = "";
+        statusNewStudent.classList.remove("status");
+    } else {
+        statusNewStudent.textContent = data.error;
+        statusNewStudent.classList.add("status");
+    }
 })

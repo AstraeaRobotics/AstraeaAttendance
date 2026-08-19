@@ -1,6 +1,7 @@
 import express from "express";
 import attendanceRoutes from "./routes/attendance.js";
 import studentRoutes from "./routes/registration.js";
+import db from "./database.js";
 
 const app = express();
 
