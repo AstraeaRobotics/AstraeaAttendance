@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astraea Attendance</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="src/client/styles.css">
 </head>
 
 <body>
     <header id="header">
-        <h1>Astraea Attendance</h1>
+        <img src="public/astraeaLogo.png" id="Logo" alt="Astraea Robotics">
+        <h1><strong>Attendance Portal</strong></h1>
     </header>
     <main>
         <section>
@@ -20,9 +21,17 @@
             <button id="submit-id">Submit</button>
             <p id="status-manual-entry"></p>
         </section>
-        <section>
+        <section id="recent-checkins-section">
             <h2>Recently Checked In</h2>
             <ul id="recent-checkins"></ul>
+        </section>
+        <section>
+            <h2>Register if you are a New Member</h2>
+            <p>Enter your school ID number and your name</p>
+            <input id="new-student-id" placeholder="Enter your ID #">
+            <input id="new-student-name" placeholder="Enter your name">
+            <button id="new-student-submit">Submit</button>
+            <p id="status-new-student"></p>
         </section>
     </main>
     <script type="module" src="./src/client/app.js"></script>
