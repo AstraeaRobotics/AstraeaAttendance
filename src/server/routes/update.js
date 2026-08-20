@@ -3,14 +3,14 @@ import { syncAttendance } from "../services/googleSheets.js";
 
 const router = express.Router();
 
-router.post("/update", (req, res) => {
+router.post("/update", async (req, res) => {
 
     try {
-        const synced = syncAttendance();
+        const result = await syncAttendance();
 
         return res.json({
             success: true,
-            numSynced: synced.number
+            numSynced: result.synced
         });
 
     } catch (error) {
