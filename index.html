@@ -15,11 +15,18 @@
     </header>
     <main>
         <section>
-            <h2>Manually Enter Id</h2>
+            <h2>Sign-In</h2>
             <p>Please do not try SQL injection</p>
-            <input id="student-id-entry" placeholder="Enter your ID #">
-            <button id="submit-id">Submit</button>
-            <p id="status-manual-entry"></p>
+            <input id="sign-in-id" placeholder="Enter your ID #">
+            <button id="sign-in-submit">Submit</button>
+            <p id="status-sign-in"></p>
+        </section>
+        <section>
+            <h2>Sign-Out</h2>
+            <p>PS: Once you sign out for the day... you can't sign back in!</p>
+            <input id="sign-out-id" placeholder="Enter your ID #">
+            <button id="sign-out-submit">Submit</button>
+            <p id="status-sign-out"></p>
         </section>
         <section id="recent-checkins-section">
             <h2>Recently Checked In</h2>
@@ -33,7 +40,8 @@
             <select id="new-student-subteam" placeholder="Select your subteam">
                 <option value="Business">Business 😴</option>
                 <option value="Mechanical">Mechanical 🥴</option>
-                <option value="Business">Programming 💪</option>
+                <option value="Programming">Programming 💪</option>
+                <option value="Programming">Business/Prog Hybrid (Anshika) 💜</option>
             </select>
             <button id="new-student-submit">Submit</button>
             <p id="status-new-student"></p>

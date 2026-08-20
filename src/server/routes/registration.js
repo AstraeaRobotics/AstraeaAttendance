@@ -1,5 +1,5 @@
 import express from "express";
-import { createStudent, markAttendance } from "../database.js";
+import { createStudent, signIn } from "../database.js";
 
 const router = express.Router();
 
@@ -10,6 +10,14 @@ router.post("/registration", (req, res) => {
         createStudent(student_id, name, subteam);
     } catch (error) {
         console.error(error);
+
+        if (error.code === "SQLITE_CONSTRAINT_PRIMARYKEY") {
+            res.status(500).json({
+                success: false,
+                error: "Student ID already exists"
+            })
+        }
+
         res.status(500).json({
             success: false,
             error: "Couldn't register user"
@@ -17,7 +25,7 @@ router.post("/registration", (req, res) => {
     }
 
     try {
-        markAttendance(student_id);
+        signIn(student_id);
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -26,7 +34,8 @@ router.post("/registration", (req, res) => {
     }
 
     res.json({
-        success: true
+        success: true,
+        name: name
     });
 });
 

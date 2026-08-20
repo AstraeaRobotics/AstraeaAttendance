@@ -1,9 +1,11 @@
 import express from "express";
 import attendanceRoutes from "./routes/attendance.js";
 import studentRoutes from "./routes/registration.js";
-import db from "./database.js";
+import db, { initializeAttendance } from "./database.js";
 
 const app = express();
+
+initializeAttendance()
 
 app.use(express.json());
 
