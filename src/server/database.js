@@ -31,13 +31,13 @@ db.exec(`
 export function initializeAttendance() {
     const statement = db.prepare(`
         INSERT INTO attendance (student_id, date, sign_in, sign_out, status)
-        SELECT id, date('now'), NULL, NULL, 'absent'
+        SELECT id, date('now','localtime'), NULL, NULL, 'absent'
         FROM students
         WHERE NOT EXISTS (
             SELECT 1
             FROM attendance
             WHERE attendance.student_id = students.id
-            AND attendance.date = date('now')
+            AND attendance.date = date('now','localtime')
         )
     `);
 
@@ -54,7 +54,8 @@ export function signIn(studentId, status = "present") {
     const statement = db.prepare(`
         UPDATE attendance
         SET status = ?,
-            sign_in = time('now', 'localtime')
+            sign_in = time('now', 'localtime'),
+            synced = 0
         WHERE student_id = ?
     `);
 
@@ -76,7 +77,8 @@ export function signOut(studentId, date) {
 
     const statement = db.prepare(`
         UPDATE attendance
-        SET sign_out = time('now', 'localtime')
+        SET sign_out = time('now', 'localtime'),
+        synced = 0
         WHERE student_id = ?
     `);
 
@@ -98,7 +100,7 @@ export function createStudent(studentId, name, subteam, status = "present") {
             (student_id, date, sign_in, status)
         VALUES
             (?, date('now'), datetime('now'), ?)
-    `)
+    `);
 
     statement2.run(studentId, status)
 }
@@ -130,7 +132,7 @@ export function isPresent(studentId, date) {
         SELECT 1
         FROM attendance
         WHERE student_id = ? AND date = ? AND status IS 'present'
-        `)
+        `);
 
     const result = statement.get(studentId, date);
     return result !== undefined;
@@ -141,7 +143,7 @@ export function getAttendance(studentId, date) {
         SELECT *
         FROM attendance
         WHERE student_id = ? AND date = ?
-        `)
+        `);
 
     const result = statement.get(studentId, date);
 
@@ -150,6 +152,43 @@ export function getAttendance(studentId, date) {
         sign_out: result.sign_out,
         status: result.status
     };
+}
+
+export function getUnsyncedAttendance() {
+
+    const statement = db.prepare(`
+        SELECT
+            attendance.primary_key,
+            attendance.student_id,
+            students.name,
+            students.subteam,
+            attendance.date,
+            attendance.sign_in,
+            attendance.sign_out,
+            attendance.status
+        FROM attendance
+        JOIN students
+            ON attendance.student_id = students.id
+        WHERE attendance.synced = 0
+        ORDER BY attendance.date, students.name
+    `);
+
+    return statement.all();
+}
+
+export function markAttendanceSynced(primaryKeys) {
+    if (!primaryKeys.length) {
+        return 0;
+    }
+
+    const placeholders = primaryKeys.map(() => "?").join(", ");
+    const statement = db.prepare(`
+        UPDATE attendance
+        SET synced = 1
+        WHERE primary_key IN (${placeholders})
+    `);
+
+    return statement.run(...primaryKeys).changes;
 }
 
 export default db;

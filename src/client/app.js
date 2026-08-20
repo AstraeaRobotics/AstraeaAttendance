@@ -13,6 +13,7 @@ const subteamNewStudent = document.querySelector("#new-student-subteam");
 const statusNewStudent = document.querySelector("#status-new-student");
 
 const recentCheckins = document.querySelector("#recent-checkins");
+const syncAttendanceButton = document.querySelector("#sync-attendance");
 
 function addCheckin(id, name, type) {
     const entry = document.createElement("li");
@@ -196,3 +197,21 @@ submitNewStudent.addEventListener("click", async () => {
         statusNewStudent.classList.add("status");
     }
 })
+
+syncAttendanceButton.addEventListener("click", async () => {
+    const response = await fetch("api/update", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    const data = await response.json();
+    const { success } = data;
+
+    if (success) {
+        addCheckin("N/A", `Synced ${data.numSynced} records to Google Sheets`, "Sync Successful");
+    } else {
+        addCheckin("N/A", `Failed to sync attendance: ${data.error}`, "Sync Failed");
+    }
+});

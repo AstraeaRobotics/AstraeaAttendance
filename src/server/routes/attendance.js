@@ -2,7 +2,9 @@ import express from "express";
 import { isPresent, getStudent, signIn, getAttendance, signOut } from "../database.js";
 
 const router = express.Router();
-const today = new Date().toISOString().split("T")[0];
+const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+}).format(new Date());
 
 router.post("/attendance", (req, res) => {
     const { studentId } = req.query;
