@@ -27,6 +27,8 @@ router.post("/registration", (req, res) => {
     try {
         signIn(student_id);
     } catch (error) {
+        console.error(error);
+
         res.status(500).json({
             success: false,
             error: "Failed to record attendance"

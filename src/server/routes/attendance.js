@@ -1,6 +1,5 @@
 import express from "express";
 import { isPresent, getStudent, signIn, getAttendance, signOut } from "../database.js";
-import e from "express";
 
 const router = express.Router();
 const today = new Date().toISOString().split("T")[0];
@@ -27,6 +26,8 @@ router.post("/attendance", (req, res) => {
             });
 
         } catch (error) {
+            console.error(error.message);
+
             return res.status(500).json({
                 success: false,
                 error: "Failed to Sign Out"
